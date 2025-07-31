@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Original Game Demo
+
+A responsive gaming platform with separate mobile and desktop layouts.
+
+## Features
+
+- **Responsive Design**: Automatically switches between mobile and desktop layouts based on screen size
+- **Mobile Layout**: Optimized for screens smaller than 768px with compact design
+- **Desktop Layout**: Enhanced layout for larger screens with better spacing and hover effects
+- **Dynamic Navigation**: Context-aware navigation that adapts to screen size
+
+## Layout Structure
+
+### Mobile Layout (`src/app/components/MobileLayout.tsx`)
+
+- Compact header with smaller logo and text
+- 2-column grid for sport cards
+- Smaller navigation icons and text
+- Optimized spacing for touch interaction
+
+### Desktop Layout (`src/app/components/DesktopLayout.tsx`)
+
+- Larger header with bigger logo and text
+- 4-column grid for sport cards
+- Larger navigation icons with hover effects
+- Centered layout with max-width container
+
+### Screen Detection (`src/app/hooks/useScreenSize.ts`)
+
+- Custom hook that detects screen size
+- Automatically switches layouts at 768px breakpoint
+- Handles window resize events
 
 ## Getting Started
 
-First, run the development server:
+1. Install dependencies:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+   ```bash
+   npm install
+   ```
+
+2. Run the development server:
+
+   ```bash
+   npm run dev
+   ```
+
+3. Open [http://localhost:3000](http://localhost:3000) in your browser
+
+## Technology Stack
+
+- Next.js 14
+- TypeScript
+- Tailwind CSS
+- React Hooks for responsive design
+
+## File Structure
+
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+src/app/
+├── components/
+│   ├── MobileLayout.tsx
+│   └── DesktopLayout.tsx
+├── hooks/
+│   └── useScreenSize.ts
+├── page.tsx
+└── layout.tsx
+```
