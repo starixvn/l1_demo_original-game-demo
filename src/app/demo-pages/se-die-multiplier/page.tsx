@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import { ChipValues, SeDieBettingOptions, SeDieCombinationOptions, DefaultGameHistory } from "../../constants/gaming";
+
 
 interface BetHistory {
   time: string;
@@ -26,32 +27,10 @@ export default function SeDieMultiplierDemo() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
 
-  const chips = [1, 10, 50, 100, 500, 1000];
-
-  const gameHistory = [
-    { type: "O", color: "bg-gray-500" },
-    { type: "O", color: "bg-gray-500" },
-    { type: "O", color: "bg-gray-500" },
-    { type: "E", color: "bg-gray-500" },
-    { type: "O", color: "bg-gray-500" },
-    { type: "E", color: "bg-gray-500" },
-    { type: "E", color: "bg-gray-500" },
-    { type: "E", color: "bg-gray-500" },
-    { type: "E", color: "bg-gray-500" },
-  ];
-
-  const bettingOptions = [
-    { name: "EVEN", payout: "1:1.97", bet: null },
-    { name: "ODD", payout: "1:1.97", bet: 10 },
-  ];
-
-  const combinationOptions = [
-    { pattern: [1, 0, 0, 1], payout: "1:1.97", bet: 10 },
-    { pattern: [1, 1, 0, 0], payout: "1:1.97", bet: null },
-    { pattern: [1, 0, 1, 0], payout: "1:1.97", bet: null },
-    { pattern: [0, 1, 0, 1], payout: "1:1.97", bet: null },
-    { pattern: [1, 1, 1, 1], payout: "1:1.97", bet: null },
-  ];
+  const chips = ChipValues;
+  const gameHistory = DefaultGameHistory;
+  const bettingOptions = SeDieBettingOptions;
+  const combinationOptions = SeDieCombinationOptions;
 
   const playerBets: PlayerBet[] = [
     { player: "john_smith92", betAmount: "20,000.00", winAmount: "200,000.00" },

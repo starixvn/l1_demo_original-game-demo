@@ -1,12 +1,12 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense } from "react";
 import DeskHeader from "../components/DeskHeader";
 import DesktopNavigationBar from "../components/NavigationBar";
-import { NavigationItems } from "../page";
+import { NavigationItems } from "../constants/navigation";
 
-export default function SportIframePage() {
+function SportIframeContent() {
   const searchParams = useSearchParams();
   const sportName = searchParams.get("name");
 
@@ -33,5 +33,20 @@ export default function SportIframePage() {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       />
     </div>
+  );
+}
+
+export default function SportIframePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-white text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    }>
+      <SportIframeContent />
+    </Suspense>
   );
 }

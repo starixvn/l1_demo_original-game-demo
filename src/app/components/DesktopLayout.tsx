@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+
 import { useRouter } from "next/navigation";
-import SportPopup from "./SportPopup";
+
 import DeskHeader from "./DeskHeader";
 import DesktopNavigationBar from "./NavigationBar";
 
@@ -16,24 +16,13 @@ interface DesktopLayoutProps {
     isNew?: boolean;
   }>;
   sportCards: Array<{ id: number; name: string }>;
-  bottomNavItems: Array<{
-    id: string;
-    label: string;
-    icon: string;
-    active: boolean;
-  }>;
 }
 
 export default function DesktopLayout({
   navigationItems,
   sportCards,
-  bottomNavItems,
 }: DesktopLayoutProps) {
   const router = useRouter();
-  const [selectedSport, setSelectedSport] = useState<{
-    id: number;
-    name: string;
-  } | null>(null);
 
   const handleSportClick = (sport: { id: number; name: string }) => {
     // Redirect to the iframe page with sport parameters
