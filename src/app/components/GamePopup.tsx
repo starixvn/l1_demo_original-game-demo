@@ -1,15 +1,50 @@
-interface SportPopupProps {
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import axios from "axios";
+import configs from "../../../configs";
+
+interface GamePopupProps {
   isOpen: boolean;
   onClose: () => void;
-  sportName: string;
+  gameName: string;
   isMobile?: boolean;
+  gameId?: number;
 }
 
-export default function SportPopup({
+export default function GamePopup({
   isOpen,
   onClose,
-  sportName,
-}: SportPopupProps) {
+  gameName,
+  gameId,
+}: GamePopupProps) {
+  const searchParams = useSearchParams();
+  const [url, setUrl] = useState("");
+  const [playerId] = useState<string>(() =>
+    searchParams.get("playerId") || Math.floor(Math.random() * 10000000).toString()
+  );
+  const hasSignedInRef = useRef(false);
+
+  useEffect(() => {
+    if (!hasSignedInRef.current && isOpen && gameName && playerId) {
+      hasSignedInRef.current = true;
+      (async () => {
+        const resolvedGameId = gameId ?? 148;
+        const response = await axios.post("/api/sign-in", {
+          playerId,
+          gameId: resolvedGameId,
+          language: "en-US",
+          currency: "INH",
+          operatorId: configs.operatorId,
+          operatorSecret: configs.operatorSecret,
+        });
+        const { redirectUrl } = response.data;
+        setUrl(redirectUrl);
+      })();
+    }
+  }, [isOpen, gameName, gameId, playerId]);
+
   if (!isOpen) return null;
 
   return (
@@ -36,7 +71,7 @@ export default function SportPopup({
               </svg>
             </button>
             <span className="font-normal text-white text-base">
-              {sportName}
+              {gameName}
             </span>
           </div>
 
@@ -49,11 +84,9 @@ export default function SportPopup({
         <div className="flex-1">
           <div className="w-full h-full bg-gray-100 flex items-center justify-center">
             <iframe
-              src={`/demo-pages/${sportName
-                .toLowerCase()
-                .replace(/\s+/g, "-")}`}
+              src={url}
               className="w-full h-full"
-              title={`${sportName} Game`}
+              title={`${gameName} Game`}
               allowFullScreen
             />
           </div>
@@ -62,3 +95,5 @@ export default function SportPopup({
     </div>
   );
 }
+
+

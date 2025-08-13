@@ -15,20 +15,19 @@ interface DesktopLayoutProps {
     active: boolean;
     isNew?: boolean;
   }>;
-  sportCards: Array<{ id: number; name: string }>;
+  gameCards: Array<{ id: number; name: string }>;
 }
 
 export default function DesktopLayout({
   navigationItems,
-  sportCards,
+  gameCards,
 }: DesktopLayoutProps) {
   const router = useRouter();
 
-  const handleSportClick = (sport: { id: number; name: string }) => {
-    // Redirect to the iframe page with sport parameters
-    router.push(
-      `/sport-iframe?id=${sport.id}&name=${encodeURIComponent(sport.name)}`
-    );
+  const handleGameClick = (game: { id: number; name: string }) => {
+    // Redirect to the iframe page with game parameters
+    const nameSlug = game.name.toLowerCase().replace(/\s+/g, "-");
+    router.push(`/game-iframe?id=${game.id}&name=${nameSlug}`);
   };
 
   return (
@@ -50,13 +49,13 @@ export default function DesktopLayout({
       {/* Sport Cards Grid - Mobile Optimized */}
       <div className="p-3">
         <div className="grid grid-cols-6 gap-2 w-full max-w-[1400px] mx-auto">
-          {sportCards.map((sport) => (
+          {gameCards.map((game) => (
             <button
-              key={sport.id}
-              onClick={() => handleSportClick(sport)}
+              key={game.id}
+              onClick={() => handleGameClick(game)}
               className="bg-[#616161] h-[180px] rounded-lg p-2 text-white relative overflow-hidden flex flex-col justify-center items-center hover:bg-[#4a4a4a] transition-colors cursor-pointer"
             >
-              <h3 className="font-bold text-xs text-center">{sport.name}</h3>
+              <h3 className="font-bold text-xs text-center">{game.name}</h3>
             </button>
           ))}
         </div>

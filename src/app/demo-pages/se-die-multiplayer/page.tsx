@@ -17,7 +17,7 @@ interface PlayerBet {
   winAmount: string;
 }
 
-export default function SeDieSingleDemo() {
+export default function SeDieMultiplayerDemo() {
   const [selectedChip, setSelectedChip] = useState(10);
   const [totalBet, setTotalBet] = useState(20000);
   const [timeRemaining, setTimeRemaining] = useState(15);
@@ -32,7 +32,11 @@ export default function SeDieSingleDemo() {
   const bettingOptions = SeDieBettingOptions;
   const combinationOptions = SeDieCombinationOptions;
 
-
+  const playerBets: PlayerBet[] = [
+    { player: "john_smith92", betAmount: "20,000.00", winAmount: "200,000.00" },
+    { player: "john_smith92", betAmount: "20,000.00", winAmount: "200,000.00" },
+    { player: "john_smith92", betAmount: "20,000.00", winAmount: "200,000.00" },
+  ];
 
   const betHistory: BetHistory[] = [
     {
@@ -357,7 +361,7 @@ export default function SeDieSingleDemo() {
               <span className={`text-sm`}>🔊</span>
             </div>
             <div
-              className={`w-8 h-8 ${bgTertiary} rounded flex items-center justify-center`}
+              className={`w-8 h-8 ${bgTertiary} rounded flex items:center justify-center`}
             >
               <span className={`text-sm`}>?</span>
             </div>
@@ -419,3 +423,5 @@ export default function SeDieSingleDemo() {
     </div>
   );
 }
+
+

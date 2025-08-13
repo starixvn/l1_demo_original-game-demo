@@ -6,12 +6,12 @@ import axios from "axios";
 import DeskHeader from "../components/DeskHeader";
 import DesktopNavigationBar from "../components/NavigationBar";
 import { NavigationItems } from "../constants/navigation";
-import { getGameId } from "../constants/gameIds";
 import configs from "../../../configs";
 
-function SportIframeContent() {
+function GameIframeContent() {
   const searchParams = useSearchParams();
-  const sportName = searchParams.get("name");
+  const gameName = searchParams.get("name");
+  const gameId = searchParams.get("id");
   const [url, setUrl] = useState("");
   const [playerId] = useState<string>(() =>
     searchParams.get("playerId") || Math.floor(Math.random() * 10000000).toString()
@@ -20,21 +20,19 @@ function SportIframeContent() {
   const hasSignedInRef = useRef(false);
 
   useEffect(() => {
-    if (!hasSignedInRef.current && sportName && playerId) {
+    if (!hasSignedInRef.current && gameName && playerId) {
       hasSignedInRef.current = true;
       handleSignIn();
     }
-  }, [sportName, playerId]);
+  }, [gameName, playerId]);
 
   const handleSignIn = async () => {
-    if (!sportName) return;
-
-    const normalizedGameName = sportName.toLowerCase().replace(/\s+/g, "-");
-    const gameId = getGameId(normalizedGameName);
+    if (!gameName) return;
+    const resolvedGameId = gameId ? Number(gameId) : 148;
 
     const response = await axios.post("/api/sign-in", {
       playerId,
-      gameId,
+      gameId: resolvedGameId,
       language: "en-US",
       currency: "INH",
       operatorId: configs.operatorId,
@@ -45,12 +43,12 @@ function SportIframeContent() {
     setUrl(redirectUrl);
   };
 
-  if (!sportName) {
+  if (!gameName) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-white text-center">
-          <h1 className="text-2xl font-bold mb-4">Invalid Sport</h1>
-          <p>Sport information is missing.</p>
+          <h1 className="text-2xl font-bold mb-4">Invalid Game</h1>
+          <p>Game information is missing.</p>
         </div>
       </div>
     );
@@ -63,7 +61,7 @@ function SportIframeContent() {
       <iframe
         src={url}
         className="w-full h-full border-0 flex-1"
-        title={`${sportName} Game`}
+        title={`${gameName} Game`}
         allowFullScreen
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       />
@@ -71,7 +69,7 @@ function SportIframeContent() {
   );
 }
 
-export default function SportIframePage() {
+export default function GameIframePage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
@@ -81,7 +79,7 @@ export default function SportIframePage() {
         </div>
       </div>
     }>
-      <SportIframeContent />
+      <GameIframeContent />
     </Suspense>
   );
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import SportPopup from "./SportPopup";
+import GamePopup from "./GamePopup";
 
 interface MobileLayoutProps {
   navigationItems: Array<{
@@ -12,7 +12,7 @@ interface MobileLayoutProps {
     active: boolean;
     isNew?: boolean;
   }>;
-  sportCards: Array<{ id: number; name: string }>;
+  gameCards: Array<{ id: number; name: string }>;
   bottomNavItems: Array<{
     id: string;
     label: string;
@@ -23,23 +23,23 @@ interface MobileLayoutProps {
 
 export default function MobileLayout({
   navigationItems,
-  sportCards,
+  gameCards,
   bottomNavItems,
 }: MobileLayoutProps) {
-  const [selectedSport, setSelectedSport] = useState<{
+  const [selectedGame, setSelectedGame] = useState<{
     id: number;
     name: string;
   } | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const handleSportClick = (sport: { id: number; name: string }) => {
-    setSelectedSport(sport);
+  const handleGameClick = (game: { id: number; name: string }) => {
+    setSelectedGame(game);
     setIsPopupOpen(true);
   };
 
   const handleClosePopup = () => {
     setIsPopupOpen(false);
-    setSelectedSport(null);
+    setSelectedGame(null);
   };
 
   return (
@@ -135,13 +135,13 @@ export default function MobileLayout({
       {/* Sport Cards Grid - Mobile Optimized */}
       <div className="p-3">
         <div className="grid grid-cols-2 gap-2">
-          {sportCards.map((sport) => (
+          {gameCards.map((game) => (
             <button
-              key={sport.id}
-              onClick={() => handleSportClick(sport)}
+              key={game.id}
+              onClick={() => handleGameClick(game)}
               className="bg-[#616161] h-[70px] rounded-lg p-2 text-white relative overflow-hidden flex flex-col justify-center items-center hover:bg-[#4a4a4a] transition-colors cursor-pointer"
             >
-              <h3 className="font-bold text-xs text-center">{sport.name}</h3>
+              <h3 className="font-bold text-xs text-center">{game.name}</h3>
             </button>
           ))}
         </div>
@@ -171,11 +171,12 @@ export default function MobileLayout({
         </div>
       </div>
 
-      {/* Sport Popup */}
-      <SportPopup
+      {/* Game Popup */}
+      <GamePopup
         isOpen={isPopupOpen}
         onClose={handleClosePopup}
-        sportName={selectedSport?.name || ""}
+        gameName={selectedGame?.name || ""}
+        gameId={selectedGame?.id}
       />
     </div>
   );

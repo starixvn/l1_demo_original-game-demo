@@ -4,7 +4,7 @@ import { useScreenSize } from "./hooks/useScreenSize";
 import MobileLayout from "./components/MobileLayout";
 import DesktopLayout from "./components/DesktopLayout";
 import { NavigationItems, BottomNavItems } from "./constants/navigation";
-import { SportCards } from "./constants/sports";
+import { GameCards } from "./constants/games";
 
 export default function Home() {
   const { isMobile, isLoading } = useScreenSize();
@@ -26,7 +26,7 @@ export default function Home() {
     return (
       <MobileLayout
         navigationItems={NavigationItems}
-        sportCards={SportCards}
+        gameCards={GameCards}
         bottomNavItems={BottomNavItems}
       />
     );
@@ -35,7 +35,7 @@ export default function Home() {
   return (
     <DesktopLayout
       navigationItems={NavigationItems}
-      sportCards={SportCards}
+      gameCards={GameCards}
     />
   );
 }

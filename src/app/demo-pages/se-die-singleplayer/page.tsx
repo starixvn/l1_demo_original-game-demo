@@ -17,7 +17,7 @@ interface PlayerBet {
   winAmount: string;
 }
 
-export default function SeDieMultiplierDemo() {
+export default function SeDieSingleplayerDemo() {
   const [selectedChip, setSelectedChip] = useState(10);
   const [totalBet, setTotalBet] = useState(20000);
   const [timeRemaining, setTimeRemaining] = useState(15);
@@ -32,11 +32,7 @@ export default function SeDieMultiplierDemo() {
   const bettingOptions = SeDieBettingOptions;
   const combinationOptions = SeDieCombinationOptions;
 
-  const playerBets: PlayerBet[] = [
-    { player: "john_smith92", betAmount: "20,000.00", winAmount: "200,000.00" },
-    { player: "john_smith92", betAmount: "20,000.00", winAmount: "200,000.00" },
-    { player: "john_smith92", betAmount: "20,000.00", winAmount: "200,000.00" },
-  ];
+
 
   const betHistory: BetHistory[] = [
     {
@@ -223,14 +219,6 @@ export default function SeDieMultiplierDemo() {
 
       {/* Game Area */}
       <div className={`${bgGame} p-4 relative`}>
-        {/* Cosmic background pattern */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-4 left-4 w-2 h-2 bg-blue-300 rounded-full"></div>
-          <div className="absolute top-8 right-8 w-1 h-1 bg-blue-300 rounded-full"></div>
-          <div className="absolute bottom-4 left-8 w-1 h-1 bg-blue-300 rounded-full"></div>
-          <div className="absolute bottom-8 right-4 w-2 h-2 bg-blue-300 rounded-full"></div>
-        </div>
-
         {/* Central Game Element */}
         <div className="flex justify-center mb-6">
           <div className="w-32 h-32 bg-white rounded-full border-4 border-gray-300 flex items-center justify-center">
@@ -271,7 +259,7 @@ export default function SeDieMultiplierDemo() {
 
         {/* Combination Betting Options */}
         <div className="grid grid-cols-3 gap-2 mb-4">
-          {combinationOptions.map((option, index) => (
+          {SeDieCombinationOptions.map((option, index) => (
             <div
               key={index}
               className={`${bgGameCard} rounded-lg p-3 relative cursor-pointer hover:opacity-80 transition-opacity ${
@@ -316,137 +304,11 @@ export default function SeDieMultiplierDemo() {
             ></div>
           </div>
         </div>
-
-        {/* Chip Selection */}
-        <div className="mb-4">
-          <div className="flex gap-2 overflow-x-auto">
-            <div
-              className={`w-6 h-6 ${bgTertiary} rounded-full flex items-center justify-center text-xs`}
-            >
-              ←
-            </div>
-            {chips.map((chip) => (
-              <div
-                key={chip}
-                className={`w-10 h-10 ${getChipColor(
-                  chip
-                )} rounded-full flex items-center justify-center text-xs font-bold ${getChipTextColor(
-                  chip
-                )} cursor-pointer hover:opacity-80 transition-opacity ${
-                  selectedChip === chip ? "ring-2 ring-white" : ""
-                }`}
-                onClick={() => handleChipSelect(chip)}
-              >
-                {chip >= 1000 ? `${chip / 1000}K` : chip}
-              </div>
-            ))}
-            <div
-              className={`w-6 h-6 ${bgTertiary} rounded-full flex items-center justify-center text-xs`}
-            >
-              →
-            </div>
-          </div>
-        </div>
-
-        {/* Total Bet and Controls */}
-        <div className="flex items-center gap-4">
-          <div className={`${bgTertiary} rounded-lg p-3 flex-1`}>
-            <div className={`text-xs ${textSecondary}`}>Total Bet</div>
-            <div className="text-lg font-bold">{totalBet.toLocaleString()}</div>
-          </div>
-          <div className="flex gap-2">
-            <div
-              className={`w-8 h-8 ${bgTertiary} rounded flex items-center justify-center`}
-            >
-              <span className={`text-sm`}>🔊</span>
-            </div>
-            <div
-              className={`w-8 h-8 ${bgTertiary} rounded flex items-center justify-center`}
-            >
-              <span className={`text-sm`}>?</span>
-            </div>
-            <div
-              className={`w-8 h-8 ${bgTertiary} rounded flex items-center justify-center`}
-            >
-              <span className={`text-sm`}>✓</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Live Player Bets */}
-      <div className={`${bgSecondary} p-4 mb-4`}>
-        <div className="flex justify-between items-center mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-            <span className="text-sm">2 players</span>
-          </div>
-          <span className="text-sm">#123456</span>
-        </div>
-        <div className={`${bgTertiary} rounded-lg p-3`}>
-          <div className="grid grid-cols-3 gap-4 text-xs font-semibold mb-2">
-            <div>Player</div>
-            <div>Bet Amount</div>
-            <div>Win Amount</div>
-          </div>
-          <div className="space-y-2 max-h-32 overflow-y-auto">
-            {playerBets.map((bet, index) => (
-              <div key={index} className="grid grid-cols-3 gap-4 text-xs">
-                <div>{bet.player}</div>
-                <div>{bet.betAmount}</div>
-                <div>{bet.winAmount}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Personal Bet History */}
-      <div className={`${bgSecondary} p-4`}>
-        {/* Tabs */}
-        <div className="flex mb-4">
-          <button
-            className={`flex-1 py-2 text-sm font-semibold border-b-2 ${
-              activeTab === "myBets"
-                ? "border-green-500 text-green-500"
-                : `${borderColor} ${textSecondary}`
-            }`}
-            onClick={() => setActiveTab("myBets")}
-          >
-            My Bets
-          </button>
-          <button
-            className={`flex-1 py-2 text-sm font-semibold border-b-2 ${
-              activeTab === "highRoller"
-                ? "border-green-500 text-green-500"
-                : `${borderColor} ${textSecondary}`
-            }`}
-            onClick={() => setActiveTab("highRoller")}
-          >
-            High Roller
-          </button>
-        </div>
-
-        {/* History Table */}
-        <div className={`${bgTertiary} rounded-lg p-3`}>
-          <div className="grid grid-cols-4 gap-4 text-xs font-semibold mb-2">
-            <div>Time</div>
-            <div>Round ID</div>
-            <div>Bet Amount</div>
-            <div>Win</div>
-          </div>
-          <div className="space-y-2 max-h-48 overflow-y-auto">
-            {betHistory.map((bet, index) => (
-              <div key={index} className="grid grid-cols-4 gap-4 text-xs">
-                <div>{bet.time}</div>
-                <div className="text-blue-400">{bet.roundId}</div>
-                <div>{bet.betAmount}</div>
-                <div>{bet.win}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );
 }
+
+
+
+
