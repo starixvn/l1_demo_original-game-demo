@@ -1,14 +1,49 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useState, useEffect, useRef } from "react";
+import axios from "axios";
 import DeskHeader from "../components/DeskHeader";
 import DesktopNavigationBar from "../components/NavigationBar";
 import { NavigationItems } from "../constants/navigation";
+import { getGameId } from "../constants/gameIds";
+import configs from "../../../configs";
 
 function SportIframeContent() {
   const searchParams = useSearchParams();
   const sportName = searchParams.get("name");
+  const [url, setUrl] = useState("");
+  const [playerId] = useState<string>(() =>
+    searchParams.get("playerId") || Math.floor(Math.random() * 10000000).toString()
+  );
+
+  const hasSignedInRef = useRef(false);
+
+  useEffect(() => {
+    if (!hasSignedInRef.current && sportName && playerId) {
+      hasSignedInRef.current = true;
+      handleSignIn();
+    }
+  }, [sportName, playerId]);
+
+  const handleSignIn = async () => {
+    if (!sportName) return;
+
+    const normalizedGameName = sportName.toLowerCase().replace(/\s+/g, "-");
+    const gameId = getGameId(normalizedGameName);
+
+    const response = await axios.post("/api/sign-in", {
+      playerId,
+      gameId,
+      language: "en-US",
+      currency: "INH",
+      operatorId: configs.operatorId,
+      operatorSecret: configs.operatorSecret,
+    });
+
+    const { redirectUrl } = response.data;
+    setUrl(redirectUrl);
+  };
 
   if (!sportName) {
     return (
@@ -26,7 +61,7 @@ function SportIframeContent() {
       <DeskHeader />
       <DesktopNavigationBar navigationItems={NavigationItems} />
       <iframe
-        src={`/demo-pages/${sportName.toLowerCase().replace(/\s+/g, "-")}`}
+        src={url}
         className="w-full h-full border-0 flex-1"
         title={`${sportName} Game`}
         allowFullScreen
