@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
 import configs from "../../../configs";
+import { IFRAME_MESSAGES } from "../constants/iframe-messages";
 
 interface GamePopupProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ export default function GamePopup({
   gameId,
 }: GamePopupProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [url, setUrl] = useState("");
   const [playerId] = useState<string>(() =>
     searchParams.get("playerId") || Math.floor(Math.random() * 10000000).toString()
@@ -44,6 +46,25 @@ export default function GamePopup({
       })();
     }
   }, [isOpen, gameName, gameId, playerId]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && typeof event.data === 'object') {
+        if (event.data.action === IFRAME_MESSAGES.BACK_TO_HOME) {
+          onClose();
+          router.push("/");
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage, false);
+    
+    return () => {
+      window.removeEventListener("message", handleMessage, false);
+    };
+  }, [isOpen, onClose, router]);
 
   if (!isOpen) return null;
 
