@@ -12,13 +12,90 @@ interface MobileLayoutProps {
     active: boolean;
     isNew?: boolean;
   }>;
-  gameCards: Array<{ id: number; name: string }>;
+  gameCards: Array<{ id: number; name: string, icon: string, isComingSoon: boolean }>;
   bottomNavItems: Array<{
     id: string;
     label: string;
     icon: string;
     active: boolean;
   }>;
+}
+
+interface MobileGameCardProps {
+  game: { id: number; name: string, icon: string, isComingSoon: boolean };
+  onGameClick: (game: { id: number; name: string }) => void;
+}
+
+interface MobilePlayNowOverlayProps {
+  isVisible: boolean;
+}
+
+interface MobileComingSoonLabelProps {
+  isVisible: boolean;
+}
+
+function MobilePlayNowOverlay({ isVisible }: MobilePlayNowOverlayProps) {
+  if (!isVisible) return null;
+  
+  return (
+    <div className="absolute bottom-0 left-0 right-0 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out bg-gradient-to-t from-black/80 via-black/40 to-transparent">
+      <div className="btn-container p-2 h-full flex items-center justify-center">
+        <button className="w-fit bg-transparent border border-white rounded-full text-white text-xs py-2 px-4 transition-all duration-200 transform hover:scale-105 cursor-pointer">
+          Play Now
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function MobileComingSoonLabel({ isVisible }: MobileComingSoonLabelProps) {
+  if (!isVisible) return null;
+  
+  return (
+    <Image 
+      src="/game-icons/label-coming-soon.png" 
+      alt="coming-soon" 
+      width={83} 
+      height={21} 
+      className="absolute top-[17%] left-[-5%] z-10 w-[64%] h-auto" 
+    />
+  );
+}
+
+function MobileGameCard({ game, onGameClick }: MobileGameCardProps) {
+  const handleClick = () => {
+    if (game.isComingSoon) {
+      return; // Block click for coming soon games
+    }
+    onGameClick(game);
+  };
+
+  return (
+    <div key={game.id}>
+      <button
+        onClick={handleClick}
+        style={{
+          backgroundImage: `url('/game-icons/${game.icon}')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          borderRadius: '8px',
+        }}
+        className={`bg-transparent w-full aspect-square p-2 text-white relative flex flex-col justify-center items-center hover:bg-transparent transition-colors group ${
+          game.isComingSoon ? 'cursor-not-allowed' : 'cursor-pointer'
+        }`}
+      >
+        {/* Inner container for slide-up effect with overflow control */}
+        <div className="absolute inset-0 overflow-hidden rounded-[8px]">
+          <MobilePlayNowOverlay isVisible={!game.isComingSoon} />
+        </div>
+        
+        {/* Coming Soon label - positioned outside the overflow container */}
+        <MobileComingSoonLabel isVisible={game.isComingSoon} />
+      </button>
+      <h3 className="font-bold text-sm text-center py-2">{game.name}</h3>
+    </div>
+  );
 }
 
 export default function MobileLayout({
@@ -132,17 +209,14 @@ export default function MobileLayout({
         </div>
       </div>
 
-      {/* Sport Cards Grid - Mobile Optimized */}
       <div className="p-3">
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-4 gap-2">
           {gameCards.map((game) => (
-            <button
+            <MobileGameCard
               key={game.id}
-              onClick={() => handleGameClick(game)}
-              className="bg-[#616161] h-[70px] rounded-lg p-2 text-white relative overflow-hidden flex flex-col justify-center items-center hover:bg-[#4a4a4a] transition-colors cursor-pointer"
-            >
-              <h3 className="font-bold text-xs text-center">{game.name}</h3>
-            </button>
+              game={game}
+              onGameClick={handleGameClick}
+            />
           ))}
         </div>
       </div>
