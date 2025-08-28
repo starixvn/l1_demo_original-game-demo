@@ -16,7 +16,7 @@ export const NavigationItems = [
   },
   { id: "games", label: "Trò Chơi", icon: "games-icon.png", active: false },
   { id: "games", label: "Bắn Cá", icon: "games-icon.png", active: false },
-  { id: "games", label: "Xó Số", icon: "games-icon.png", active: false },
+  { id: "games", label: "Xổ Số", icon: "games-icon.png", active: false },
   { id: "games", label: "Khuyến Mãi", icon: "games-icon.png", active: false },
   { id: "games", label: "VIP", icon: "games-icon.png", active: false },
   { id: "games", label: "Sự Kiện", icon: "games-icon.png", active: false },

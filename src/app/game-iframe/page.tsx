@@ -55,7 +55,7 @@ function GameIframeContent() {
   }
 
   return (
-    <div className="w-full h-dvh bg-black min-w-[1400px] flex flex-col">
+    <div className="w-full h-dvh bg-black flex flex-col">
       <DeskHeader />
       <DesktopNavigationBar navigationItems={NavigationItems} />
       <iframe

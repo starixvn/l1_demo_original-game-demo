@@ -6,7 +6,7 @@ export default function DeskHeader() {
   return (
     <>
       {/* Header */}
-      <div className="bg-[#0a1b38] text-white h-[115px] flex items-center justify-between px-8">
+      <div className="bg-[#0a1b38] text-white h-[115px] flex items-center justify-between px-8 sticky top-0 z-10">
         <div className="flex items-center justify-between max-w-[1400px] mx-auto w-full">
           <a href={"/"} className="flex items-center gap-4">
             <Image src="/nova-logo.png" alt="logo" width={159} height={68} />

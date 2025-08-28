@@ -31,7 +31,7 @@ export default function DesktopLayout({
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 min-w-[1400px]">
+    <div className="min-h-screen bg-gray-100">
       <DeskHeader />
       <DesktopNavigationBar navigationItems={navigationItems} />
       <div className="flex justify-between items-center">
