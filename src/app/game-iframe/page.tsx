@@ -16,6 +16,9 @@ function GameIframeContent() {
   const [playerId] = useState<string>(() =>
     searchParams.get("playerId") || Math.floor(Math.random() * 10000000).toString()
   );
+  const [language] = useState<string>(() =>
+    searchParams.get("lang") || searchParams.get("language") || "en-US"
+  );
 
   const hasSignedInRef = useRef(false);
 
@@ -29,11 +32,10 @@ function GameIframeContent() {
   const handleSignIn = async () => {
     if (!gameName) return;
     const resolvedGameId = gameId ? Number(gameId) : 148;
-
-    const response = await axios.post("/api/sign-in", {
+    const response = await axios.post(`/api/sign-in?lang=${encodeURIComponent(language)}` , {
       playerId,
       gameId: resolvedGameId,
-      language: "en-US",
+      language,
       currency: "INH",
       operatorId: configs.operatorId,
       operatorSecret: configs.operatorSecret,

@@ -26,6 +26,9 @@ export default function GamePopup({
   const [playerId] = useState<string>(() =>
     searchParams.get("playerId") || Math.floor(Math.random() * 10000000).toString()
   );
+  const [language] = useState<string>(() =>
+    searchParams.get("lang") || searchParams.get("language") || "en-US"
+  );
   const hasSignedInRef = useRef(false);
 
   useEffect(() => {
@@ -36,11 +39,11 @@ export default function GamePopup({
         const response = await axios.post("/api/sign-in", {
           playerId,
           gameId: resolvedGameId,
-          language: "en-US",
+          language,
           currency: "INH",
           operatorId: configs.operatorId,
           operatorSecret: configs.operatorSecret,
-        });
+        }, { params: { lang: language } });
         const { redirectUrl } = response.data;
         setUrl(redirectUrl);
       })();

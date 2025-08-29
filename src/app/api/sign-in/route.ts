@@ -8,6 +8,11 @@ export async function POST(request: Request) {
     const browserUserAgent = request.headers.get("user-agent");
     const { playerId, gameId, language, currency, operatorId, operatorSecret } = body;
 
+    // Read language from query params to allow override via URL (?lang=xx or ?language=xx)
+    const url = new URL(request.url);
+    const urlLang = url.searchParams.get("lang") || url.searchParams.get("language");
+    const finalLanguage = urlLang || language || "en-US";
+
     const randomPlayerId = Math.floor(Math.random() * 10000000).toString();
     const id = playerId || randomPlayerId;
     const params = {
@@ -15,7 +20,7 @@ export async function POST(request: Request) {
       siteId: "4100300",
       browserUserAgent,
       currency: currency || "INH",
-      language: language || "en-US",
+      language: finalLanguage,
       ip: "0",
       playerId: id,
       playerName: `username_${id}`,
