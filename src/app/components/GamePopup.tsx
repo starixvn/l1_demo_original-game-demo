@@ -55,7 +55,7 @@ export default function GamePopup({
     
     const handleMessage = (event: MessageEvent) => {
       if (event.data && typeof event.data === 'object') {
-        if (event.data.action === IFRAME_MESSAGES.BACK_TO_HOME) {
+        if (event.data.action === IFRAME_MESSAGES.BACK_TO_ORIGINAL_PAGE) {
           onClose();
           router.push("/");
         }

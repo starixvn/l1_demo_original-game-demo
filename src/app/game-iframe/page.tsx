@@ -1,15 +1,17 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense, useState, useEffect, useRef } from "react";
 import axios from "axios";
 import DeskHeader from "../components/DeskHeader";
 import DesktopNavigationBar from "../components/NavigationBar";
 import { NavigationItems } from "../constants/navigation";
 import configs from "../../../configs";
+import { IFRAME_MESSAGES } from "../constants/iframe-messages";
 
 function GameIframeContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const gameName = searchParams.get("name");
   const gameId = searchParams.get("id");
   const [url, setUrl] = useState("");
@@ -28,6 +30,22 @@ function GameIframeContent() {
       handleSignIn();
     }
   }, [gameName, playerId]);
+
+  // Listen for messages from the iframe (desktop flow)
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && typeof event.data === "object") {
+        if (event.data.action === IFRAME_MESSAGES.BACK_TO_ORIGINAL_PAGE) {
+          router.push("/");
+        }
+      }
+    };
+
+    window.addEventListener("message", handleMessage, false);
+    return () => {
+      window.removeEventListener("message", handleMessage, false);
+    };
+  }, [router]);
 
   const handleSignIn = async () => {
     if (!gameName) return;
