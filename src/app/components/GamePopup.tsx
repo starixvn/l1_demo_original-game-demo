@@ -66,6 +66,51 @@ export default function GamePopup({
     };
   }, [isOpen, onClose, router]);
 
+  // Temporarily disable page zoom while the popup is open to prevent iOS auto-zoom on inputs
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const existingMeta = document.querySelector('meta[name="viewport"]') as HTMLMetaElement | null;
+    const createdMeta = !existingMeta ? document.createElement('meta') : null;
+    const metaEl = existingMeta || createdMeta!;
+    const prevContent = existingMeta?.getAttribute('content') || '';
+
+    if (createdMeta) {
+      createdMeta.name = 'viewport';
+      document.head.appendChild(createdMeta);
+    }
+
+    const parseTokens = (content: string) => {
+      const map = new Map<string, string>();
+      content.split(',').map(s => s.trim()).filter(Boolean).forEach(pair => {
+        const [k, v] = pair.split('=');
+        if (k) map.set(k, v || '');
+      });
+      return map;
+    };
+
+    const tokens = parseTokens(prevContent);
+    if (!tokens.has('width')) tokens.set('width', 'device-width');
+    if (!tokens.has('initial-scale')) tokens.set('initial-scale', '1');
+    tokens.set('maximum-scale', '1');
+    tokens.set('user-scalable', 'no');
+    if (!tokens.has('viewport-fit')) tokens.set('viewport-fit', 'cover');
+
+    const content = Array.from(tokens.entries()).map(([k, v]) => v ? `${k}=${v}` : k).join(', ');
+    metaEl.setAttribute('content', content);
+
+    return () => {
+      if (createdMeta) {
+        // Remove the meta we created
+        createdMeta.parentNode?.removeChild(createdMeta);
+      } else if (existingMeta) {
+        // Restore previous content
+        if (prevContent) existingMeta.setAttribute('content', prevContent);
+        else existingMeta.removeAttribute('content');
+      }
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
