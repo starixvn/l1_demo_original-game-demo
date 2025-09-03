@@ -127,8 +127,8 @@ export default function MobileLayout({
           <Image src="/nova-logo.png" alt="logo" width={80} height={80} />
         </div>
         <div className="text-right">
-          <p className="text-xs">Xin Chào, bradytrang</p>
-          <p className="text-base font-bold">VND $75.62 (&apos;000)</p>
+          <p className="text-xs">Hello, bradytrang</p>
+          <p className="text-base font-bold">VND 50,000</p>
         </div>
       </div>
 
@@ -141,21 +141,19 @@ export default function MobileLayout({
           <div className="flex-1 overflow-hidden">
             <div className="animate-marquee whitespace-nowrap">
               <span className="inline-block mr-8">
-                Chào mừng bạn đến với Nova! Nhận ngay 100% tiền thưởng cho thành
-                viên mới
+                Welcome to Nova! Get 100% bonus for new members
               </span>
               <span className="inline-block mr-8">
-                Giải đấu thể thao hàng tuần - Tổng giải thưởng lên đến 500 triệu
-                VND
+                Weekly sports tournament - Up to 500 million VND prize
               </span>
               <span className="inline-block mr-8">
-                Slot game mới ra mắt - Lucky Dragon với RTP 97.5%
+                New slot game - Lucky Dragon with RTP 97.5%
               </span>
               <span className="inline-block mr-8">
-                Nạp tiền lần đầu nhận ngay 50% tiền thưởng + 50 free spins
+                First deposit bonus - 50% bonus + 50 free spins
               </span>
               <span className="inline-block mr-8">
-                Live Casino với dealer xinh đẹp - Trải nghiệm game thực tế
+                Live Casino with beautiful dealers - Real game experience
               </span>
             </div>
           </div>
