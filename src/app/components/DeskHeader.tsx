@@ -1,8 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import { useBalanceManager } from "../hooks/useBalanceManager";
 
 export default function DeskHeader() {
+  const { getDisplayBalance, getDisplayName } = useBalanceManager();
+
   return (
     <>
       {/* Header */}
@@ -48,7 +51,7 @@ export default function DeskHeader() {
                 alt="vip-icon"
                 className="w-16 h-16"
               />
-              <span className="text-sm font-medium">bradytrang</span>
+              <span className="text-sm font-medium">Hello, {getDisplayName()}</span>
             </div>
 
             {/* Message Icon */}
@@ -69,7 +72,7 @@ export default function DeskHeader() {
             {/* Balance Section */}
             <div className="flex flex-col">
               <span className="text-sm">Balance</span>
-              <span className="text-sm font-semibold">VND 50,000</span>
+              <span className="text-sm font-semibold">{getDisplayBalance()}</span>
             </div>
 
             {/* Deposit Button */}

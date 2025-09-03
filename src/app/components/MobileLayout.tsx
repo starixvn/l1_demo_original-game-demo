@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import GamePopup from "./GamePopup";
+import { useBalanceManager } from "../hooks/useBalanceManager";
 
 interface MobileLayoutProps {
   navigationItems: Array<{
@@ -108,6 +109,7 @@ export default function MobileLayout({
     name: string;
   } | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const { getDisplayBalance, getDisplayName } = useBalanceManager();
 
   const handleGameClick = (game: { id: number; name: string }) => {
     setSelectedGame(game);
@@ -127,8 +129,8 @@ export default function MobileLayout({
           <Image src="/nova-logo.png" alt="logo" width={80} height={80} />
         </div>
         <div className="text-right">
-          <p className="text-xs">Hello, bradytrang</p>
-          <p className="text-base font-bold">VND 50,000</p>
+          <p className="text-xs">Hello, {getDisplayName()}</p>
+          <p className="text-base font-bold">{getDisplayBalance()}</p>
         </div>
       </div>
 
