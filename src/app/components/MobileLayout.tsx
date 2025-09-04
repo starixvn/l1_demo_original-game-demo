@@ -58,7 +58,7 @@ function MobileComingSoonLabel({ isVisible }: MobileComingSoonLabelProps) {
       alt="coming-soon" 
       width={83} 
       height={21} 
-      className="absolute top-[17%] left-[-5%] z-10 w-[64%] h-auto" 
+      className="absolute top-[17%] left-[-7%] z-10 w-[96%] h-auto" 
     />
   );
 }
@@ -94,7 +94,7 @@ function MobileGameCard({ game, onGameClick }: MobileGameCardProps) {
         {/* Coming Soon label - positioned outside the overflow container */}
         <MobileComingSoonLabel isVisible={game.isComingSoon} />
       </button>
-      <h3 className="font-bold text-sm text-center py-2">{game.name}</h3>
+      <h3 className="lg:font-bold font-medium lg:text-sm text-xs text-center py-2">{game.name}</h3>
     </div>
   );
 }
