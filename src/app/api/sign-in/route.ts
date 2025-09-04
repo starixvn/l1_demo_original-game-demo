@@ -13,17 +13,22 @@ export async function POST(request: Request) {
     const urlLang = url.searchParams.get("lang") || url.searchParams.get("language");
     const finalLanguage = urlLang || language || "en-US";
 
-    const randomPlayerId = Math.floor(Math.random() * 10000000).toString();
-    const id = playerId || randomPlayerId;
+    // Read currency from query params to allow override via URL (?currency=xx)
+    const urlCurrency = url.searchParams.get("currency");
+    const finalCurrency = urlCurrency || currency || "INH";
+
+    // Read playerId from query params first, then body, then random as final fallback
+    const urlPlayerId = url.searchParams.get("playerId");
+    const finalPlayerId = urlPlayerId || playerId || Math.floor(Math.random() * 10000000).toString();
     const params = {
       seq: "d,y,lumi",
       siteId: "4100300",
       browserUserAgent,
-      currency: currency || "INH",
+      currency: finalCurrency,
       language: finalLanguage,
       ip: "0",
-      playerId: id,
-      playerName: `username_${id}`,
+      playerId: finalPlayerId,
+      playerName: `username_${finalPlayerId}`,
       gameId: gameId || 148,
       appType: 10,
       siteName: "OriginalGameDemo",
@@ -37,7 +42,7 @@ export async function POST(request: Request) {
     const operator = operatorId === "PFF" ? "pff" : "ow";
     // Validate the incoming configuration
     const responseBalance = await axios.post(
-      `${configs.owApiUrl}/SetDefaultBalance?playerId=${id}&operator=${operator}&balance=20000&maxBet=20000&siteId=4100300`
+      `${configs.owApiUrl}/SetDefaultBalance?playerId=${finalPlayerId}&operator=${operator}&balance=20000&maxBet=20000&siteId=4100300`
     );
     if (responseBalance.status !== 200) {
       return;

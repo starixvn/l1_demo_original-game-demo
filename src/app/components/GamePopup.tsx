@@ -23,32 +23,37 @@ export default function GamePopup({
   const searchParams = useSearchParams();
   const router = useRouter();
   const [url, setUrl] = useState("");
-  const [playerId] = useState<string>(() =>
-    searchParams.get("playerId") || Math.floor(Math.random() * 10000000).toString()
+  const [playerId] = useState<string | undefined>(() =>
+    searchParams.get("playerId") || undefined
   );
   const [language] = useState<string>(() =>
     searchParams.get("lang") || searchParams.get("language") || "en-US"
   );
+  const [currency] = useState<string>(() =>
+    searchParams.get("currency") || "INH"
+  );
   const hasSignedInRef = useRef(false);
 
   useEffect(() => {
-    if (!hasSignedInRef.current && isOpen && gameName && playerId) {
+    if (!hasSignedInRef.current && isOpen && gameName) {
       hasSignedInRef.current = true;
       (async () => {
         const resolvedGameId = gameId ?? 148;
-        const response = await axios.post("/api/sign-in", {
-          playerId,
+        const requestBody = {
+          playerId, // Always include (undefined is fine, API handles fallback)
           gameId: resolvedGameId,
           language,
-          currency: "INH",
+          currency,
           operatorId: configs.operatorId,
           operatorSecret: configs.operatorSecret,
-        }, { params: { lang: language } });
+        };
+
+        const response = await axios.post("/api/sign-in", requestBody, { params: { lang: language, currency } });
         const { redirectUrl } = response.data;
         setUrl(redirectUrl);
       })();
     }
-  }, [isOpen, gameName, gameId, playerId]);
+  }, [isOpen, gameName, gameId]);
 
   useEffect(() => {
     if (!isOpen) return;

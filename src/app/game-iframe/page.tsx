@@ -15,21 +15,24 @@ function GameIframeContent() {
   const gameName = searchParams.get("name");
   const gameId = searchParams.get("id");
   const [url, setUrl] = useState("");
-  const [playerId] = useState<string>(() =>
-    searchParams.get("playerId") || Math.floor(Math.random() * 10000000).toString()
+  const [playerId] = useState<string | undefined>(() =>
+    searchParams.get("playerId") || undefined
   );
   const [language] = useState<string>(() =>
     searchParams.get("lang") || searchParams.get("language") || "en-US"
+  );
+  const [currency] = useState<string>(() =>
+    searchParams.get("currency") || "INH"
   );
 
   const hasSignedInRef = useRef(false);
 
   useEffect(() => {
-    if (!hasSignedInRef.current && gameName && playerId) {
+    if (!hasSignedInRef.current && gameName) {
       hasSignedInRef.current = true;
       handleSignIn();
     }
-  }, [gameName, playerId]);
+  }, [gameName]);
 
   // Listen for messages from the iframe (desktop flow)
   useEffect(() => {
@@ -50,14 +53,17 @@ function GameIframeContent() {
   const handleSignIn = async () => {
     if (!gameName) return;
     const resolvedGameId = gameId ? Number(gameId) : 148;
-    const response = await axios.post(`/api/sign-in?lang=${encodeURIComponent(language)}` , {
-      playerId,
+
+    const requestBody = {
+      playerId, // Always include (undefined is fine, API handles fallback)
       gameId: resolvedGameId,
       language,
-      currency: "INH",
+      currency,
       operatorId: configs.operatorId,
       operatorSecret: configs.operatorSecret,
-    });
+    };
+
+    const response = await axios.post(`/api/sign-in?lang=${encodeURIComponent(language)}&currency=${encodeURIComponent(currency)}` , requestBody);
 
     const { redirectUrl } = response.data;
     setUrl(redirectUrl);
