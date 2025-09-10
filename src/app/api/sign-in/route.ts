@@ -36,7 +36,8 @@ export async function POST(request: Request) {
         operatorId: operatorId || "ONEworksVGCash",
         operatorSecret: operatorSecret || "VG@SC123",
       },
-      operatorToken: "ONEworksVGCashToken"
+      operatorToken: "ONEworksVGCashToken",
+      ref: "m_direct"
     };
 
     const operator = operatorId === "PFF" ? "pff" : "ow";
