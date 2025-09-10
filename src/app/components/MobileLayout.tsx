@@ -72,29 +72,31 @@ function MobileGameCard({ game, onGameClick }: MobileGameCardProps) {
   };
 
   return (
-    <div key={game.id}>
-      <button
-        onClick={handleClick}
-        style={{
-          backgroundImage: `url('/game-icons/${game.icon}')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          borderRadius: '8px',
-        }}
-        className={`bg-transparent w-full aspect-square p-2 text-white relative flex flex-col justify-center items-center hover:bg-transparent transition-colors group ${
-          game.isComingSoon ? 'cursor-not-allowed' : 'cursor-pointer'
-        }`}
-      >
-        {/* Inner container for slide-up effect with overflow control */}
-        <div className="absolute inset-0 overflow-hidden rounded-[8px]">
-          <MobilePlayNowOverlay isVisible={!game.isComingSoon} />
-        </div>
-        
-        {/* Coming Soon label - positioned outside the overflow container */}
-        <MobileComingSoonLabel isVisible={game.isComingSoon} />
-      </button>
-      <h3 className="lg:font-bold font-medium lg:text-sm text-xs text-center py-2">{game.name}</h3>
+    <div key={game.id} className="flex flex-col">
+      <div className="relative aspect-square mb-2">
+        <button
+          onClick={handleClick}
+          style={{
+            backgroundImage: `url('/game-icons/${game.icon}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            borderRadius: '8px',
+          }}
+          className={`w-full h-full bg-transparent text-white flex flex-col justify-center items-center hover:bg-transparent transition-colors group rounded-[8px] ${
+            game.isComingSoon ? 'cursor-not-allowed' : 'cursor-pointer'
+          }`}
+        >
+          {/* Inner container for slide-up effect with overflow control */}
+          <div className="absolute inset-0 overflow-hidden rounded-[8px]">
+            <MobilePlayNowOverlay isVisible={!game.isComingSoon} />
+          </div>
+
+          {/* Coming Soon label - positioned outside the overflow container */}
+          <MobileComingSoonLabel isVisible={game.isComingSoon} />
+        </button>
+      </div>
+      <h3 className="font-medium text-xs text-center leading-tight">{game.name}</h3>
     </div>
   );
 }
@@ -164,13 +166,13 @@ export default function MobileLayout({
 
       {/* Promotional Banner */}
       <div className="flex justify-between items-center">
-        <div className="flex w-full aspect-[125/47] justify-center">
+        <div className="flex w-full justify-center" style={{ paddingBottom: '37.6%', position: 'relative' }}>
           <Image
             src="/banners/banner.png"
             alt="promotional-banner"
             width={1920}
             height={150}
-            className="object-cover"
+            className="absolute inset-0 w-full h-full object-cover"
           />
         </div>
       </div>

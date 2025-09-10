@@ -35,7 +35,7 @@ function PlayNowOverlay({ isVisible }: PlayNowOverlayProps) {
   
   return (
     <div className="absolute bottom-0 left-0 right-0 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out bg-gradient-to-t from-black/80 via-black/40 to-transparent">
-      <div className="btn-container p-4 h-45 flex items-center justify-center">
+      <div className="btn-container p-4 h-[180px] flex items-center justify-center">
         <button className="w-fit bg-transparent border border-white rounded-full text-white py-3 px-6 transition-all duration-200 transform hover:scale-105 cursor-pointer">
           Play Now
         </button>
