@@ -34,8 +34,17 @@ export default function GamePopup({
   );
   const hasSignedInRef = useRef(false);
 
+  // Reset state when game changes
   useEffect(() => {
-    if (!hasSignedInRef.current && isOpen && gameName) {
+    if (gameName && gameId) {
+      // Reset the ref and URL when game changes
+      hasSignedInRef.current = false;
+      setUrl("");
+    }
+  }, [gameName, gameId]);
+
+  useEffect(() => {
+    if (!hasSignedInRef.current && isOpen && gameName && gameId) {
       hasSignedInRef.current = true;
       (async () => {
         const resolvedGameId = gameId ?? 148;
