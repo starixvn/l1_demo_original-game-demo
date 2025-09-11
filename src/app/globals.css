@@ -34,6 +34,20 @@ body {
   height: 100%;
 }
 
+/* iPhone 8 and older iOS viewport fixes */
+@supports (-webkit-appearance: none) {
+  .h-screen {
+    height: 100vh;
+    height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+  }
+
+  /* Fix for fixed positioning on iOS */
+  .fixed {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
 /* Marquee Animation */
 @keyframes marquee {
   0% {

@@ -102,6 +102,7 @@ export default function GamePopup({
     if (!tokens.has('initial-scale')) tokens.set('initial-scale', '1');
     tokens.set('maximum-scale', '1');
     tokens.set('user-scalable', 'no');
+    tokens.set('minimum-scale', '1'); // Prevent zoom out as well
     if (!tokens.has('viewport-fit')) tokens.set('viewport-fit', 'cover');
 
     const content = Array.from(tokens.entries()).map(([k, v]) => v ? `${k}=${v}` : k).join(', ');
@@ -123,9 +124,9 @@ export default function GamePopup({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className={`bg-white w-full h-dvh flex flex-col`}>
+      <div className="bg-white w-full h-screen max-h-screen flex flex-col">
         {/* Iframe Content */}
-        <div className="flex-1">
+        <div className="flex-1 min-h-0">
           <div className="w-full h-full bg-gray-100 flex items-center justify-center">
             <iframe
               src={url}
