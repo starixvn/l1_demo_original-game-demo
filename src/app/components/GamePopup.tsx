@@ -33,6 +33,7 @@ export default function GamePopup({
     searchParams.get("currency") || "INH"
   );
   const hasSignedInRef = useRef(false);
+  const popupRef = useRef<HTMLDivElement>(null);
 
   // Reset state when game changes
   useEffect(() => {
@@ -128,10 +129,41 @@ export default function GamePopup({
     };
   }, [isOpen]);
 
+  // Prevent drag reload and all dragging within popup
+  useEffect(() => {
+    if (!isOpen || !popupRef.current) return;
+
+    const popupElement = popupRef.current;
+
+    const preventAllDragging = (e: TouchEvent) => {
+      // Prevent all touch move events within the popup to stop any dragging behavior
+      if (e.type === 'touchmove') {
+        e.preventDefault();
+      }
+    };
+
+    // Add touch event listeners to the popup overlay to prevent any dragging
+    popupElement.addEventListener('touchmove', preventAllDragging, { passive: false });
+
+    // Also prevent dragging on the iframe container
+    const iframeContainer = popupElement.querySelector('.flex-1') as HTMLElement;
+    if (iframeContainer) {
+      iframeContainer.addEventListener('touchmove', preventAllDragging, { passive: false });
+    }
+
+    return () => {
+      // Clean up event listeners
+      popupElement.removeEventListener('touchmove', preventAllDragging);
+      if (iframeContainer) {
+        iframeContainer.removeEventListener('touchmove', preventAllDragging);
+      }
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div ref={popupRef} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className={`bg-white w-full h-dvh flex flex-col`}>
         {/* Iframe Content */}
         <div className="flex-1">
