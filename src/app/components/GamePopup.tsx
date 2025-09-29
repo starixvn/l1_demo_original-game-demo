@@ -135,43 +135,82 @@ export default function GamePopup({
 
     const popupElement = popupRef.current;
 
-    const preventAllDragging = (e: TouchEvent) => {
-      // Prevent all touch move events within the popup to stop any dragging behavior
-      if (e.type === 'touchmove') {
-        e.preventDefault();
-      }
+    const preventDragReload = (e: TouchEvent | Event) => {
+      // Prevent all touch and gesture events that could trigger drag-to-reload
+      e.preventDefault();
+      e.stopPropagation();
     };
 
-    // Add touch event listeners to the popup overlay to prevent any dragging
-    popupElement.addEventListener('touchmove', preventAllDragging, { passive: false });
+    // Get the iframe element
+    const iframeElement = popupElement.querySelector('iframe') as HTMLIFrameElement;
 
-    // Also prevent dragging on the iframe container
+    // Add comprehensive touch and gesture event prevention
+    const eventsToPrevent = [
+      'touchstart', 'touchmove', 'touchend',
+      'gesturestart', 'gesturechange', 'gestureend'
+    ];
+
+    // Apply to popup overlay
+    eventsToPrevent.forEach(eventType => {
+      popupElement.addEventListener(eventType, preventDragReload, { passive: false });
+    });
+
+    // Apply to iframe container
     const iframeContainer = popupElement.querySelector('.flex-1') as HTMLElement;
     if (iframeContainer) {
-      iframeContainer.addEventListener('touchmove', preventAllDragging, { passive: false });
+      eventsToPrevent.forEach(eventType => {
+        iframeContainer.addEventListener(eventType, preventDragReload, { passive: false });
+      });
+    }
+
+    // Apply to iframe element itself (for events that bubble from within)
+    if (iframeElement) {
+      eventsToPrevent.forEach(eventType => {
+        iframeElement.addEventListener(eventType, preventDragReload, { passive: false });
+      });
     }
 
     return () => {
-      // Clean up event listeners
-      popupElement.removeEventListener('touchmove', preventAllDragging);
-      if (iframeContainer) {
-        iframeContainer.removeEventListener('touchmove', preventAllDragging);
-      }
+      // Clean up all event listeners
+      eventsToPrevent.forEach(eventType => {
+        popupElement.removeEventListener(eventType, preventDragReload);
+        if (iframeContainer) {
+          iframeContainer.removeEventListener(eventType, preventDragReload);
+        }
+        if (iframeElement) {
+          iframeElement.removeEventListener(eventType, preventDragReload);
+        }
+      });
     };
   }, [isOpen]);
 
   if (!isOpen) return null;
 
   return (
-    <div ref={popupRef} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className={`bg-white w-full h-dvh flex flex-col`}>
+    <div
+      ref={popupRef}
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      style={{
+        touchAction: 'none',
+        overscrollBehavior: 'none'
+      }}
+    >
+      <div
+        className={`bg-white w-full h-dvh flex flex-col`}
+        style={{
+          touchAction: 'none',
+          overscrollBehavior: 'none'
+        }}
+      >
         {/* Iframe Content */}
         <div className="flex-1 relative isolate">
-          <div 
+          <div
             className="w-full h-full bg-gray-100"
-            style={{ 
+            style={{
               contain: 'layout style paint',
-              isolation: 'isolate'
+              isolation: 'isolate',
+              touchAction: 'none',
+              overscrollBehavior: 'none'
             }}
           >
             <iframe
@@ -181,11 +220,13 @@ export default function GamePopup({
               allowFullScreen
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
               sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock"
-              style={{ 
+              style={{
                 colorScheme: 'normal',
                 display: 'block',
                 minHeight: '100%',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                touchAction: 'none',
+                overscrollBehavior: 'none'
               }}
             />
           </div>
