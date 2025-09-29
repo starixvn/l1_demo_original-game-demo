@@ -166,13 +166,27 @@ export default function GamePopup({
     <div ref={popupRef} className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className={`bg-white w-full h-dvh flex flex-col`}>
         {/* Iframe Content */}
-        <div className="flex-1">
-          <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+        <div className="flex-1 relative isolate">
+          <div 
+            className="w-full h-full bg-gray-100"
+            style={{ 
+              contain: 'layout style paint',
+              isolation: 'isolate'
+            }}
+          >
             <iframe
               src={url}
-              className="w-full h-full"
+              className="w-full h-full border-0 block"
               title={`${gameName} Game`}
               allowFullScreen
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+              sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock"
+              style={{ 
+                colorScheme: 'normal',
+                display: 'block',
+                minHeight: '100%',
+                overflow: 'hidden'
+              }}
             />
           </div>
         </div>
