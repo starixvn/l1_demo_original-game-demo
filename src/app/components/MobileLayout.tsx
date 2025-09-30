@@ -96,7 +96,7 @@ function MobileGameCard({ game, onGameClick }: MobileGameCardProps) {
           <MobileComingSoonLabel isVisible={game.isComingSoon} />
         </button>
       </div>
-      <h3 className="font-medium text-xs text-center leading-tight">{game.name}</h3>
+      <h3 className="font-medium text-xs text-center text-[#171717] leading-tight">{game.name}</h3>
     </div>
   );
 }
