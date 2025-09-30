@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GamePopup from "./GamePopup";
 import { useBalanceManager } from "../hooks/useBalanceManager";
 
@@ -112,6 +112,39 @@ export default function MobileLayout({
   } | null>(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const { getDisplayBalance, getDisplayName } = useBalanceManager();
+
+  // Prevent pull-to-refresh on iOS Safari
+  useEffect(() => {
+    let isPreventingRefresh = false;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (window.scrollY === 0) {
+        isPreventingRefresh = true;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (isPreventingRefresh && window.scrollY === 0 && e.touches[0].clientY > 0) {
+        e.preventDefault();
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isPreventingRefresh = false;
+    };
+
+    // Add event listeners
+    document.addEventListener('touchstart', handleTouchStart, { passive: false });
+    document.addEventListener('touchmove', handleTouchMove, { passive: false });
+    document.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart);
+      document.removeEventListener('touchmove', handleTouchMove);
+      document.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
 
   const handleGameClick = (game: { id: number; name: string }) => {
     setSelectedGame(game);
