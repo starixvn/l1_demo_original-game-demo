@@ -81,7 +81,7 @@ function GameIframeContent() {
   }
 
   return (
-    <div className="w-full h-dvh bg-black flex flex-col">
+    <div className="w-full h-screen bg-black flex flex-col relative">
       <DeskHeader />
       <DesktopNavigationBar navigationItems={NavigationItems} />
       <iframe
@@ -89,14 +89,7 @@ function GameIframeContent() {
         className="w-full h-full border-0 flex-1 block"
         title={`${gameName} Game`}
         allowFullScreen
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
-        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock"
-        style={{ 
-          colorScheme: 'normal',
-          display: 'block',
-          minHeight: '100%',
-          overflow: 'hidden'
-        }}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture;"
       />
     </div>
   );
