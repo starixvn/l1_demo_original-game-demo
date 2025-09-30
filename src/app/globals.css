@@ -25,6 +25,48 @@ body {
   -webkit-overflow-scrolling: auto;
 }
 
+/* Prevent pull-to-refresh in game popup iframe containers - only prevent vertical overscroll */
+.overflow-hidden {
+  overscroll-behavior-y: none !important;
+  -webkit-overflow-scrolling: auto !important;
+}
+
+iframe {
+  overscroll-behavior-y: none !important;
+}
+
+/* Additional prevention for game popup modal */
+body.game-popup-open {
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
+  overscroll-behavior-x: none !important;
+  -webkit-overflow-scrolling: auto !important;
+  touch-action: pan-x pan-y !important;
+  position: fixed !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+body.game-popup-open html {
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
+  overscroll-behavior-x: none !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+body.game-popup-open #__next {
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* Ensure complete scroll prevention */
+body.game-popup-open * {
+  overscroll-behavior-y: none !important;
+  -webkit-overflow-scrolling: auto !important;
+}
+
 /* Fallback for aspect-ratio in older browsers */
 .aspect-square {
   position: relative;

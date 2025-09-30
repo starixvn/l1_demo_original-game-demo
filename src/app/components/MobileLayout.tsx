@@ -116,21 +116,36 @@ export default function MobileLayout({
   // Prevent pull-to-refresh on iOS Safari
   useEffect(() => {
     let isPreventingRefresh = false;
+    let startY = 0;
+    let startX = 0;
 
     const handleTouchStart = (e: TouchEvent) => {
       if (window.scrollY === 0) {
         isPreventingRefresh = true;
+        startY = e.touches[0].clientY;
+        startX = e.touches[0].clientX;
       }
     };
 
     const handleTouchMove = (e: TouchEvent) => {
-      if (isPreventingRefresh && window.scrollY === 0 && e.touches[0].clientY > 0) {
-        e.preventDefault();
+      if (isPreventingRefresh && window.scrollY === 0) {
+        const currentY = e.touches[0].clientY;
+        const currentX = e.touches[0].clientX;
+        const deltaY = currentY - startY;
+        const deltaX = Math.abs(currentX - startX);
+
+        // Only prevent if it's a vertical pull-down gesture (deltaY > 0)
+        // and there's minimal horizontal movement (< 10px)
+        if (deltaY > 0 && deltaX < 10) {
+          e.preventDefault();
+        }
       }
     };
 
     const handleTouchEnd = () => {
       isPreventingRefresh = false;
+      startY = 0;
+      startX = 0;
     };
 
     // Add event listeners

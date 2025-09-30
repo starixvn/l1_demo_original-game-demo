@@ -33,6 +33,7 @@ export default function GamePopup({
     searchParams.get("currency") || "INH"
   );
   const hasSignedInRef = useRef(false);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
 
   // Reset state when game changes
   useEffect(() => {
@@ -83,9 +84,16 @@ export default function GamePopup({
     };
   }, [isOpen, onClose, router]);
 
-  // Temporarily disable page zoom while the popup is open to prevent iOS auto-zoom on inputs
+  // Temporarily disable page zoom and add body class while the popup is open to prevent iOS auto-zoom and pull-to-refresh
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      // Remove the class when popup closes
+      document.body.classList.remove('game-popup-open');
+      return;
+    }
+
+    // Add the class when popup opens
+    document.body.classList.add('game-popup-open');
 
     const existingMeta = document.querySelector('meta[name="viewport"]') as HTMLMetaElement | null;
     const createdMeta = !existingMeta ? document.createElement('meta') : null;
@@ -117,6 +125,8 @@ export default function GamePopup({
     metaEl.setAttribute('content', content);
 
     return () => {
+      // Remove the class when cleaning up
+      document.body.classList.remove('game-popup-open');
       if (createdMeta) {
         // Remove the meta we created
         createdMeta.parentNode?.removeChild(createdMeta);
@@ -128,32 +138,115 @@ export default function GamePopup({
     };
   }, [isOpen]);
 
+  // Comprehensive pull-to-refresh prevention for iOS Safari
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const preventDefault = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
+    // Prevent all touch events that could trigger pull-to-refresh
+    const handleTouchStart = (e: TouchEvent) => {
+      if (window.scrollY === 0) {
+        preventDefault(e);
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (window.scrollY === 0 && e.touches.length === 1) {
+        preventDefault(e);
+      }
+    };
+
+    // Add event listeners at all levels with capture
+    const options = { passive: false, capture: true };
+
+    document.addEventListener('touchstart', handleTouchStart, options);
+    document.addEventListener('touchmove', handleTouchMove, options);
+    document.body.addEventListener('touchstart', handleTouchStart, options);
+    document.body.addEventListener('touchmove', handleTouchMove, options);
+    window.addEventListener('touchstart', handleTouchStart, options);
+    window.addEventListener('touchmove', handleTouchMove, options);
+
+    // Also prevent wheel events (trackpad/touchpad pull gestures)
+    const handleWheel = (e: WheelEvent) => {
+      if (window.scrollY === 0 && e.deltaY < 0) {
+        preventDefault(e);
+      }
+    };
+
+    document.addEventListener('wheel', handleWheel, options);
+    window.addEventListener('wheel', handleWheel, options);
+
+    return () => {
+      document.removeEventListener('touchstart', handleTouchStart, true);
+      document.removeEventListener('touchmove', handleTouchMove, true);
+      document.body.removeEventListener('touchstart', handleTouchStart, true);
+      document.body.removeEventListener('touchmove', handleTouchMove, true);
+      window.removeEventListener('touchstart', handleTouchStart, true);
+      window.removeEventListener('touchmove', handleTouchMove, true);
+      document.removeEventListener('wheel', handleWheel, true);
+      window.removeEventListener('wheel', handleWheel, true);
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className={`bg-white w-full h-dvh flex flex-col`}>
+      {/* Invisible overlay to capture touch events before they reach the iframe */}
+      <div
+        className="absolute inset-0 pointer-events-auto"
+        style={{
+          touchAction: 'pan-y',
+          overscrollBehavior: 'none',
+          overscrollBehaviorY: 'none'
+        }}
+        onTouchStart={(e) => {
+          // Capture touch start events to prevent pull-to-refresh
+          if (window.scrollY === 0) {
+            e.preventDefault();
+          }
+        }}
+        onTouchMove={(e) => {
+          // Prevent vertical scrolling when at top
+          if (window.scrollY === 0 && e.touches[0].clientY > 0) {
+            e.preventDefault();
+          }
+        }}
+      />
+      <div className={`bg-white w-full h-dvh flex flex-col relative`}>
         {/* Iframe Content */}
         <div className="flex-1 relative isolate">
-          <div 
-            className="w-full h-full bg-gray-100"
-            style={{ 
+          <div
+            className="w-full h-full bg-gray-100 overflow-hidden"
+            style={{
               contain: 'layout style paint',
-              isolation: 'isolate'
+              isolation: 'isolate',
+              overscrollBehavior: 'none',
+              overscrollBehaviorY: 'none',
+              WebkitOverflowScrolling: 'auto',
+              touchAction: 'pan-x pan-y'
             }}
           >
             <iframe
+              ref={iframeRef}
               src={url}
               className="w-full h-full border-0 block"
               title={`${gameName} Game`}
               allowFullScreen
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
               sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-pointer-lock"
-              style={{ 
+              style={{
                 colorScheme: 'normal',
                 display: 'block',
                 minHeight: '100%',
-                overflow: 'hidden'
+                overflow: 'hidden',
+                overscrollBehavior: 'none',
+                overscrollBehaviorY: 'none',
+                touchAction: 'pan-x pan-y'
               }}
             />
           </div>
