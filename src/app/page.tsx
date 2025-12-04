@@ -3,8 +3,10 @@
 import { useScreenSize } from "./hooks/useScreenSize";
 import MobileLayout from "./components/MobileLayout";
 import DesktopLayout from "./components/DesktopLayout";
+import One2BetLayout from "./components/12bet";
 import { NavigationItems, BottomNavItems } from "./constants/navigation";
 import { GameCards } from "./constants/games";
+import configs from "../../configs";
 
 export default function Home() {
   const { isMobile, isLoading } = useScreenSize();
@@ -21,6 +23,13 @@ export default function Home() {
     );
   }
 
+  // Render OtherLayout if isOther is true
+  if (configs.is12Bet) {
+    return (
+      <One2BetLayout navigationItems={NavigationItems} gameCards={GameCards} />
+    );
+  }
+
   // Render appropriate layout based on screen size
   if (isMobile) {
     return (
@@ -33,9 +42,6 @@ export default function Home() {
   }
 
   return (
-    <DesktopLayout
-      navigationItems={NavigationItems}
-      gameCards={GameCards}
-    />
+    <DesktopLayout navigationItems={NavigationItems} gameCards={GameCards} />
   );
 }

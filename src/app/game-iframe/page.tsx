@@ -8,6 +8,8 @@ import DesktopNavigationBar from "../components/NavigationBar";
 import { NavigationItems } from "../constants/navigation";
 import configs from "../../../configs";
 import { IFRAME_MESSAGES } from "../constants/iframe-messages";
+import One2BetHeader from "../components/12bet/header";
+import One2BetNavigationBar from "../components/12bet/nagigation-bar";
 
 function GameIframeContent() {
   const searchParams = useSearchParams();
@@ -15,14 +17,14 @@ function GameIframeContent() {
   const gameName = searchParams.get("name");
   const gameId = searchParams.get("id");
   const [url, setUrl] = useState("");
-  const [playerId] = useState<string | undefined>(() =>
-    searchParams.get("playerId") || undefined
+  const [playerId] = useState<string | undefined>(
+    () => searchParams.get("playerId") || undefined
   );
-  const [language] = useState<string>(() =>
-    searchParams.get("lang") || searchParams.get("language") || "en-US"
+  const [language] = useState<string>(
+    () => searchParams.get("lang") || searchParams.get("language") || "en-US"
   );
-  const [currency] = useState<string>(() =>
-    searchParams.get("currency") || "INH"
+  const [currency] = useState<string>(
+    () => searchParams.get("currency") || "INH"
   );
 
   const hasSignedInRef = useRef(false);
@@ -63,7 +65,12 @@ function GameIframeContent() {
       operatorSecret: configs.operatorSecret,
     };
 
-    const response = await axios.post(`/api/sign-in?lang=${encodeURIComponent(language)}&currency=${encodeURIComponent(currency)}` , requestBody);
+    const response = await axios.post(
+      `/api/sign-in?lang=${encodeURIComponent(
+        language
+      )}&currency=${encodeURIComponent(currency)}`,
+      requestBody
+    );
 
     const { redirectUrl } = response.data;
     setUrl(redirectUrl);
@@ -82,8 +89,12 @@ function GameIframeContent() {
 
   return (
     <div className="w-full h-screen bg-black flex flex-col relative">
-      <DeskHeader />
-      <DesktopNavigationBar navigationItems={NavigationItems} />
+      {configs.is12Bet ? <One2BetHeader /> : <DeskHeader />}
+      {configs.is12Bet ? (
+        <One2BetNavigationBar navigationItems={NavigationItems} />
+      ) : (
+        <DesktopNavigationBar navigationItems={NavigationItems} />
+      )}
       <iframe
         src={url}
         className="w-full h-full border-0 flex-1 block"
@@ -97,14 +108,16 @@ function GameIframeContent() {
 
 export default function GameIframePage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
-          <p>Loading...</p>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+          <div className="text-white text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+            <p>Loading...</p>
+          </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <GameIframeContent />
     </Suspense>
   );

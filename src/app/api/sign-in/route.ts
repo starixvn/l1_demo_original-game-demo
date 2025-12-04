@@ -6,11 +6,13 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const browserUserAgent = request.headers.get("user-agent");
-    const { playerId, gameId, language, currency, operatorId, operatorSecret } = body;
+    const { playerId, gameId, language, currency, operatorId, operatorSecret } =
+      body;
 
     // Read language from query params to allow override via URL (?lang=xx or ?language=xx)
     const url = new URL(request.url);
-    const urlLang = url.searchParams.get("lang") || url.searchParams.get("language");
+    const urlLang =
+      url.searchParams.get("lang") || url.searchParams.get("language");
     const finalLanguage = urlLang || language || "en-US";
 
     // Read currency from query params to allow override via URL (?currency=xx)
@@ -19,7 +21,10 @@ export async function POST(request: Request) {
 
     // Read playerId from query params first, then body, then random as final fallback
     const urlPlayerId = url.searchParams.get("playerId");
-    const finalPlayerId = urlPlayerId || playerId || Math.floor(Math.random() * 10000000).toString();
+    const finalPlayerId =
+      urlPlayerId ||
+      playerId ||
+      Math.floor(Math.random() * 10000000).toString();
     const params = {
       seq: "d,y,lumi",
       siteId: "4100300",
@@ -31,13 +36,13 @@ export async function POST(request: Request) {
       playerName: `username_${finalPlayerId}`,
       gameId: gameId || 148,
       appType: 10,
-      siteName: "OriginalGameDemo",
+      siteName: configs.is12Bet ? "12bet" : "nova88",
       auth: {
         operatorId: operatorId || "ONEworksVGCash",
         operatorSecret: operatorSecret || "VG@SC123",
       },
       operatorToken: "ONEworksVGCashToken",
-      ref: "m_direct"
+      ref: "m_direct",
     };
 
     const operator = operatorId === "PFF" ? "pff" : "ow";

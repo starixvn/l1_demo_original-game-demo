@@ -8,6 +8,7 @@ const configs = {
   owApiUrl: configJson.owApiUrl || "https://l2-ows.lumigame.com/SabaClub",
   operatorId: configJson.operatorId || "ONEworksVGCash",
   operatorSecret: configJson.operatorSecret || "VG@SC123",
+  is12Bet: configJson.is12Bet || false,
 };
 
 export default configs;
